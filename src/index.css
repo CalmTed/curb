@@ -1,0 +1,47 @@
+:root{
+  --bg: #000;
+  --text: #fff;
+  --text-second: #999;
+  --button-lines: #005909;
+  --state-red: #C50000;
+  --state-green: #009E10;
+  --state-black: #000;
+}
+
+html{
+  height: 100vh;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  margin: auto;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.3em;
+  text-transform: uppercase;
+}
+
+.button{
+  cursor: pointer;
+  transition: all 5s;
+  --button-color: transparent;
+  background-image: repeating-linear-gradient(45deg, var(--button-color) 0, var(--button-color) 2px, transparent 0, transparent 16px);
+}
+.button:hover{
+  --button-color: var(--button-lines);
+}
+.button:active{
+
+}
+
+*:focus{
+  outline: none;
+}
+
+input, textarea{
+  background-color: transparent;
+  color: var(--text);
+  resize: none;
+  font-family: inherit;
+}
