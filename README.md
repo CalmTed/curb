@@ -31,3 +31,17 @@ Tasks:
 - optimal row height
 - optimal title width
 - toggle always on top or do it by default?
+
+### INSTALING FOR DEVELOPERS
+
+1. clone repository
+`git clone https://github.com/CalmTed/curb`
+
+2. install dependencies
+`npm install`
+
+3. start in developing mode
+`npm run dev`
+
+4. build 
+`npm run make`
