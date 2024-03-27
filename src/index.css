@@ -39,9 +39,22 @@ body {
   outline: none;
 }
 
+a{
+  color: var(--state-green);
+}
+
 input, textarea{
   background-color: transparent;
   color: var(--text);
   resize: none;
   font-family: inherit;
+}
+
+@keyframes blinking {
+  0%,100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: var(--state-red);
+  }
 }

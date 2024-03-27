@@ -1,9 +1,11 @@
 import React, { FC, useState } from "react"
-import { TaskModel, ActionModel, ACTION_NAME } from "../tools/models"
+import { TaskModel, ActionModel, ACTION_NAME, AppStateModel } from "../tools/models"
 import { styled } from "styled-components"
 import { formatDateToString, formatDateToTimestamp } from "../tools/formatDate"
+import { DAY } from "../tools/constants"
 
 interface TaskComponentModel{
+    state: AppStateModel
     task: TaskModel,
     dispatch: (action: ActionModel) => void
 }
@@ -14,7 +16,19 @@ const TaskStyle = styled.div`
     align-items: center;
     height: 4em;
     min-height: 4em;
-    justify-content: stretch;
+    justify-content: space-between;
+    &.status-blinking-red{
+        animation: blinking 1s ease-in-out 0s infinite;
+    }
+    &.status-red{
+        background: var(--state-red);
+    }
+    &.status-green{
+        background: var(--state-green);
+    }
+    &.status-black{
+        background: var(--bg);
+    }
     & .confirmWrapper{
         width: 100%;
         height: 100%;
@@ -35,7 +49,6 @@ const TaskStyle = styled.div`
         height: 100%;   
         overflow: hidden;
         border: none;
-        transation: border 0.5s;
         border: 0pt solid transparent;
         text-align:center;
         *{
@@ -43,11 +56,8 @@ const TaskStyle = styled.div`
             border: 0pt solid transparent;
         }
     }
-    &>*:not(.removeButton){
-        
-        & input:not(:focus):hover{
-            background-image: repeating-linear-gradient(45deg, var(--text-second) 0, var(--text-second) 2px, transparent 0, transparent 16px);
-        }
+    & input:not(:focus):hover{
+        background-image: repeating-linear-gradient(45deg, var(--text-second) 0, var(--text-second) 2px, transparent 0, transparent 16px);
     }
     textarea:not(:focus):hover{
         background-image: repeating-linear-gradient(45deg, var(--text-second) 0, var(--text-second) 2px, transparent 0, transparent 16px);
@@ -66,7 +76,6 @@ const TaskStyle = styled.div`
             font-size: 0.8em;
             width: 100%;
             height: 1em;
-            color: var(--text-second);
          }
     }
     & .description{
@@ -79,23 +88,25 @@ const TaskStyle = styled.div`
             background-image: repeating-linear-gradient(45deg, var(--state-red) 0, var(--state-red) 2px, transparent 0, transparent 16px);
         }
         font-size: 1.1em;
-        max-width: 6em;
+        max-width: 5em;
     }
     & .removeButton{
         opacity: 0;
-        transition: opacity 0.1s;
-        max-width: 3em;
+        transition: all 0.1s;
+        min-width: 2em;
+        width: 4em;
+        max-width: 4em;
         display: flex;
         justify-content: center;
         align-items: center;
     }
-    &:hover .removeButton{   
+    &:hover .removeButton{
         opacity: 1;
     }
 
 `
 
-export const TaskItem: FC<TaskComponentModel> = ({task, dispatch}) => {
+export const TaskItem: FC<TaskComponentModel> = ({state, task, dispatch}) => {
     const [isRemovalConfirmationShown, showConfirmation] = useState(false)
     const [dateString, setDateString] = useState(formatDateToString(task.dueToDate))
 
@@ -134,7 +145,6 @@ export const TaskItem: FC<TaskComponentModel> = ({task, dispatch}) => {
         if(!convertedDate){
             return;
         }
-        console.log("setting date", convertedDate, newVal)
         dispatch({
             name: ACTION_NAME.EDIT_TASK,
             payload: {
@@ -144,20 +154,28 @@ export const TaskItem: FC<TaskComponentModel> = ({task, dispatch}) => {
         })
     }
 
-    const isDateValid = typeof formatDateToTimestamp(dateString) !== "undefined"
-    return <TaskStyle>
+    const isDateValid = typeof formatDateToTimestamp(dateString) !== "undefined";
+    const timeLeft = task.dueToDate - new Date().getTime();
+    const bgColorClass = timeLeft < -DAY 
+        ? "status-blinking-red"
+        : timeLeft < DAY * state.settings.showRedStatus
+            ? "status-red"
+            : timeLeft < DAY * state.settings.showGreenStatus
+                ? "status-green"
+                : "status-black";
+    return <TaskStyle className={bgColorClass}>
         {
         !isRemovalConfirmationShown && <>
             <div className="name">
                 <input
                     className="title"
-                    placeholder="Номер наказу"
+                    placeholder="Назва"
                     value={task.title}
                     onChange={(e) => handleEdit({title: e.target.value})}
                 />
                 <input
                     className="titleSecond"
-                    placeholder="дата наказу"
+                    placeholder="підзаголовок"
                     value={task.titleSecond}
                     onChange={(e) => handleEdit({titleSecond: e.target.value})}
                 />

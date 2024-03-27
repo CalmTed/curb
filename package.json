@@ -2,7 +2,7 @@
   "name": "curb",
   "productName": "curb",
   "version": "1.0.0",
-  "description": "TODO list with due to date",
+  "description": "Todo list with due to date",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",

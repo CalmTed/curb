@@ -1,5 +1,5 @@
 import { STORE_NAME } from "./constants";
-import { createTask } from "./initaials";
+import { createTask, defaultSettings } from "./initaials";
 import { ACTION_NAME, ActionModel, AppStateModel } from "./models";
 
 
@@ -10,7 +10,7 @@ export const reduce: (state: AppStateModel, action: ActionModel) => AppStateMode
         case ACTION_NAME.ADD_TASK:
             newState = {
                 ...state,
-                tasks: [...state.tasks, createTask()]
+                tasks: [...state.tasks, createTask(state.settings.defaultTaskDueTo)]
             }
         break;
         case ACTION_NAME.EDIT_TASK:
@@ -18,25 +18,10 @@ export const reduce: (state: AppStateModel, action: ActionModel) => AppStateMode
             || typeof action?.payload?.id !== "number"){
                 break;
             } 
-            console.log(state.tasks.map(t => {
-                if(t.id === action.payload.id){
-                    console.log(t.id, action.payload?.description ?? t.description);
-                    return {
-                        ...t,
-                        title: action.payload?.title ?? t.title,
-                        titleSecond: action.payload?.titleSecond ?? t.titleSecond,
-                        description: action.payload?.description ?? t.description,
-                        dueToDate: action.payload?.dueToDate ?? t.dueToDate,
-                    }
-                }else{
-                    return t;
-                }                        
-            }))
             newState = {
                 ...state,
                 tasks: state.tasks.map(t => {
                     if(t.id === action.payload.id){
-                        console.log(t.id, action.payload?.description ?? t.description);
                         return {
                             ...t,
                             title: action.payload?.title ?? t.title,
@@ -56,9 +41,30 @@ export const reduce: (state: AppStateModel, action: ActionModel) => AppStateMode
             }
             newState = {
                 ...state,
+                lastStateReload: new Date().getTime(),
                 tasks: state.tasks.filter(t => t.id !== action.payload)
             }
         break;
+        case ACTION_NAME.RERENDER:
+            newState = {
+                ...state,
+                lastStateReload: new Date().getTime()
+            }
+        break;
+        case ACTION_NAME.SET_SETTINGS:
+            if(typeof action?.payload !== "object"){
+                break;
+            }
+            newState = {
+                ...state,
+                settings: {
+                            ...state.settings,
+                            defaultTaskDueTo: action.payload?.defaultTaskDueTo ?? state.settings.defaultTaskDueTo ?? defaultSettings.defaultTaskDueTo,
+                            showGreenStatus: action.payload?.showGreenStatus ?? state.settings.showGreenStatus ?? defaultSettings.showGreenStatus,
+                            showRedStatus: action.payload?.showRedStatus ?? state.settings.showRedStatus ?? defaultSettings.showRedStatus,
+                        }                    
+            }
+        break; 
         default: console.error(action)
     }
 

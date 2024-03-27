@@ -1,7 +1,13 @@
 
 export interface AppStateModel{
     version: string,
-    tasks: TaskModel[]
+    tasks: TaskModel[],
+    lastStateReload: number,
+    settings: {
+        defaultTaskDueTo: number//in days
+        showRedStatus: number//in days
+        showGreenStatus: number//in days
+    }
 }
 
 export interface TaskModel{
@@ -9,13 +15,15 @@ export interface TaskModel{
     title: string,
     titleSecond: string,
     description: string,
-    dueToDate: number
+    dueToDate: number,
 }
 
 export enum ACTION_NAME {
-    "ADD_TASK" = "ADD_TASK",
-    "EDIT_TASK" = "EDiT_TASK",
-    "REMOVE_TASK" = "REMOVE_TASK",
+    ADD_TASK = "ADD_TASK",
+    EDIT_TASK = "EDiT_TASK",
+    REMOVE_TASK = "REMOVE_TASK",
+    RERENDER = "RERENDER",
+    SET_SETTINGS = "SET_SETTINGS"
 }
 
 export type ActionModel = {
@@ -31,5 +39,14 @@ export type ActionModel = {
         titleSecond?: string
         description?: string
         dueToDate?: number
+    }
+} | {
+    name: ACTION_NAME.RERENDER
+} | {
+    name: ACTION_NAME.SET_SETTINGS,
+    payload: {
+        defaultTaskDueTo?: number
+        showRedStatus?: number
+        showGreenStatus?: number
     }
 }
