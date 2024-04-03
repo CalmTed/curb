@@ -71,6 +71,7 @@ const TaskStyle = styled.div`
            width: 100%;
            height: 1.3em;
            font-weight: 900;
+           margin-top: 0.2em;
         }
         & .titleSecond{
             font-size: 0.8em;
@@ -81,7 +82,7 @@ const TaskStyle = styled.div`
     & .description{
         max-width: 40%;
         font-size: 0.9em;
-        height: 2.2em;
+        height: 2.6em;
     }
     & .dueToDate{
         &.invalid{
@@ -92,16 +93,19 @@ const TaskStyle = styled.div`
     }
     & .removeButton{
         opacity: 0;
+        flex:0;
+        display: none;
         transition: all 0.1s;
-        min-width: 2em;
-        width: 4em;
-        max-width: 4em;
+        max-width: 3em;
         display: flex;
         justify-content: center;
         align-items: center;
     }
     &:hover .removeButton{
+        min-width: 2em;
         opacity: 1;
+        flex: 1;
+        display: flex;
     }
 
 `
@@ -170,12 +174,14 @@ export const TaskItem: FC<TaskComponentModel> = ({state, task, dispatch}) => {
                 <input
                     className="title"
                     placeholder="Назва"
+                    spellCheck="false"
                     value={task.title}
                     onChange={(e) => handleEdit({title: e.target.value})}
                 />
                 <input
                     className="titleSecond"
                     placeholder="підзаголовок"
+                    spellCheck="false"
                     value={task.titleSecond}
                     onChange={(e) => handleEdit({titleSecond: e.target.value})}
                 />
@@ -183,12 +189,14 @@ export const TaskItem: FC<TaskComponentModel> = ({state, task, dispatch}) => {
             <textarea
                 className="description"
                 placeholder="опис"
+                spellCheck="false"
                 value={task.description}
                 onChange={(e) => handleEdit({description: e.target.value})}
             />
             <input
                 type="text"
                 placeholder="дд-мм-рррр"
+                spellCheck="false"
                 className={`dueToDate ${isDateValid ? "valid" : "invalid"}`}
                 value={dateString}
                 onChange={(e) => handleDateChange(e.target.value)}

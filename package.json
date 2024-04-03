@@ -1,7 +1,7 @@
 {
   "name": "curb",
   "productName": "curb",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Todo list with due to date",
   "main": ".webpack/main",
   "scripts": {

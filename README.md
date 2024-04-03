@@ -30,7 +30,6 @@ Tasks:
 ### QUESTIONS
 - optimal row height
 - optimal title width
-- toggle always on top or do it by default?
 
 ### INSTALING FOR DEVELOPERS
 
@@ -41,7 +40,7 @@ Tasks:
 `npm install`
 
 3. start in developing mode
-`npm run dev`
+`npm start`
 
 4. build 
 `npm run make`

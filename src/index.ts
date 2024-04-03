@@ -14,8 +14,8 @@ if (require('electron-squirrel-startup')) {
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 1000,
-    width: 800,
+    height: 1200,
+    width: 600,
     // backgroundMaterial: "acrylic",
     alwaysOnTop: true,
     title: "Curb",
@@ -25,10 +25,17 @@ const createWindow = (): void => {
     backgroundColor: "#000",
     // transparent: true,
     opacity: 0.9,
+    x: 0,
+    y:0,
     webPreferences: {
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
     },
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#000',
+      symbolColor: '#005909'
+    }
   });
 
   mainWindow.setMenu( Menu.buildFromTemplate([]))

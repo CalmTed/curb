@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { styled }  from 'styled-components';
 import { ACTION_NAME, ActionModel, AppStateModel } from './tools/models';
-import { STORE_NAME, VERSION } from './tools/constants';
+import { allowedVersions, STORE_NAME, VERSION } from './tools/constants';
 import { reduce } from './tools/reducer';
 import { TaskItem } from './components/task';
 import { createState } from './tools/initaials';
@@ -14,6 +14,14 @@ const AppStyleComponent = styled.div`
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
+    padding-bottom: 5em;
+    height: calc(100vh - 5em);
+    .titlebar{
+        height: 30px;
+        width: 100%;
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
+    }
     .aboutBlock{
         h1{
             margin-bottom: 0;
@@ -60,6 +68,23 @@ const AppStyleComponent = styled.div`
         justify-items: center;
         text-align: center;
         align-items: center;
+        transition: all .2s;
+    }
+    .showSettings{
+        position: fixed;
+        bottom: -5em;
+        background-color: var(--bg);
+    }
+    .addTask{
+        opacity: 0;
+    }
+    &:hover{
+        .showSettings{
+            bottom: 0;
+        }
+        .addTask{
+            opacity: 1;
+        }   
     }
 `
 
@@ -86,11 +111,13 @@ const App: FC<{initialState: AppStateModel}> = ({initialState}) => {
         window.ipc.on("import-reply", (dataString: string) => {
             try{
                 const newState = JSON.parse(dataString) as AppStateModel
-                console.log(newState.version)
-                if(newState.version !== VERSION){
+                if(!allowedVersions.includes(newState.version)){
                     return;
                 }
-                setState(newState)
+                setState({
+                    ...newState,
+                    version: VERSION
+                })
             }catch(e){
                 console.error("Unable to import import")
             }
@@ -143,7 +170,7 @@ const App: FC<{initialState: AppStateModel}> = ({initialState}) => {
     // }
 
     return <AppStyleComponent>
-        
+        <div className="titlebar"></div>
         {!showSettings && <>
             { state.tasks.sort((ta,tb) => ta.dueToDate - tb.dueToDate).map((task) => {
                 return <TaskItem key={task.id} state={state} task={task} dispatch={handleDispatch}/>
